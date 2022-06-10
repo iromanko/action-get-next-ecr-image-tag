@@ -1,5 +1,5 @@
-name: Get Next Container Image Tag
-description: Determine the next container image tag
+name: Get Next ECR Image Tag
+description: Determine the next container image tag for an image in ECR
 inputs:
   registry:
     description: The url for the regsitry
@@ -21,7 +21,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Get Next Container Image Tag
+    - name: Get Next ECR Image Tag
       id: get-next-tag
       shell: pwsh
-      run: ${{ github.action_path }}/get-next-container-image-tag.ps1 -Registry '${{ inputs.registry }}' -RepositoryName '${{ inputs.repository-name }}' -MajorMinorVersion '${{ inputs.major-minor-version }}'
+      run: ${{ github.action_path }}/get-next-ecr-image-tag.ps1 -Registry '${{ inputs.registry }}' -RepositoryName '${{ inputs.repository-name }}' -MajorMinorVersion '${{ inputs.major-minor-version }}'
