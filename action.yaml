@@ -1,0 +1,27 @@
+name: Get Next Container Image Tag
+description: Determine the next container image tag
+inputs:
+  registry:
+    description: The url for the regsitry
+    required: true
+  repository-name:
+    description: The name of the repository for the container image
+    required: true
+  major-minor-version:
+    description: The major.minor version of the container image
+    required: false
+    default: "1.0"
+outputs:
+  next-tag:
+    description: The next tag
+    value: ${{ steps.get-next-tag.outputs.next-tag }}
+  next-image-name:
+    description: The full image name with the next tag
+    value: ${{ steps.get-next-tag.outputs.next-image-name }}
+runs:
+  using: composite
+  steps:
+    - name: Get Next Container Image Tag
+      id: get-next-tag
+      shell: pwsh
+      run: ./get-next-container-image-tag.ps1 -Registry '${{ inputs.registry }}' -RepositoryName '${{ inputs.repsitory-name }}' -MajorMinorVersion '${{ inputs.major-minor-version }}'
