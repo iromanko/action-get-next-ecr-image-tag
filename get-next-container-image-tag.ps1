@@ -15,6 +15,6 @@ if (-Not $greatest_tag) {
 else {
     $next_tag = [Version]::new($greatest_tag.Major, $greatest_tag.Minor, $greatest_tag.Build + 1)
 }
-$next_image_name = "$Regsitry/$($RepositoryName):$next_tag"
+$next_image_name = "$Registry/$($RepositoryName):$next_tag"
 Write-Host "::set-output name=next-tag::$next_tag"
 Write-Host "::set-output name=next-image-name::$next_image_name"
