@@ -23,5 +23,5 @@ runs:
   steps:
     - name: Get Next Container Image Tag
       id: get-next-tag
-      shell: bash
-      run: ./get-next-container-image-tag.ps1 -Registry '${{ inputs.registry }}' -RepositoryName '${{ inputs.repository-name }}' -MajorMinorVersion '${{ inputs.major-minor-version }}'
+      shell: pwsh
+      run: ${{ github.action_path }}/get-next-container-image-tag.ps1 -Registry '${{ inputs.registry }}' -RepositoryName '${{ inputs.repository-name }}' -MajorMinorVersion '${{ inputs.major-minor-version }}'
