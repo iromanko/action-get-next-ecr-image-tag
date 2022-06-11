@@ -24,4 +24,4 @@ runs:
     - name: Get Next ECR Image Tag
       id: get-next-tag
       shell: pwsh
-      run: ${{ github.action_path }}/get-next-ecr-image-tag.ps1 -Registry '${{ inputs.registry }}' -RepositoryName '${{ inputs.repository-name }}' -MajorMinorVersion '${{ inputs.major-minor-version }}'
+      run: ${{ github.action_path }}/action.ps1 -Registry '${{ inputs.registry }}' -RepositoryName '${{ inputs.repository-name }}' -MajorMinorVersion '${{ inputs.major-minor-version }}'
