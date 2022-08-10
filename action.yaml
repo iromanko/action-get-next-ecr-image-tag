@@ -11,6 +11,10 @@ inputs:
     description: The major.minor version of the container image
     required: false
     default: "1.0"
+  pre-release-tag:
+    description: "Append a pre-release-tag to the major-minor-version, ex: 1.0-rc.0"
+    required: false
+    default: ""
 outputs:
   next-tag:
     description: The next tag
@@ -24,4 +28,9 @@ runs:
     - name: Get Next ECR Image Tag
       id: get-next-tag
       shell: pwsh
-      run: ${{ github.action_path }}/action.ps1 -Registry '${{ inputs.registry }}' -RepositoryName '${{ inputs.repository-name }}' -MajorMinorVersion '${{ inputs.major-minor-version }}'
+      run: ${{ github.action_path }}/action.ps1
+      env:
+        INPUT_REGISTRY: ${{ inputs.registry }}
+        INPUT_REPOSITORY_NAME: ${{ inputs.repository-name }}
+        INPUT_MAJOR_MINOR_VERSION: ${{ inputs.major-minor-version }}
+        INPUT_PRE_RELEASE_TAG: ${{ inputs.pre-release-tag }}

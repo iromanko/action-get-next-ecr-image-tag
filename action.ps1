@@ -1,20 +1,22 @@
 #!/bin/env pwsh
 [CmdletBinding()]
 param (
-    [String]$Registry,
-    [String]$RepositoryName,
-    [String]$MajorMinorVersion
+    [String]$Registry = $env:INPUT_REGISTRY,
+    [String]$RepositoryName = $env:INPUT_REPOSITORY_NAME,
+    [String]$MajorMinorVersion = $env:INPUT_MAJOR_MINOR_VERSION,
+    [String]$PreReleaseTag = $env:INPUT_PRE_RELEASE_TAG
 )
 
-$tag_pattern = "$($MajorMinorVersion.Replace('.','\.'))\.\d+"
+$suffix = if ($PreReleaseTag) { "-$PreReleaseTag" } else { "" }
+$tag_pattern = "$($MajorMinorVersion.Replace('.','\.'))$($suffix)\.(\d+)"
+
 $tags = (aws ecr list-images --repository-name $RepositoryName | ConvertFrom-Json).imageIds.imageTag
-$greatest_tag = $tags | Where-Object { $_ -match $tag_pattern } | ForEach-Object { [Version]"$_" } | Sort-Object -Descending | Select-Object -First 1
-if (-Not $greatest_tag) {
-    $next_tag = [Version]"$($MajorMinorVersion).0"
-}
-else {
-    $next_tag = [Version]::new($greatest_tag.Major, $greatest_tag.Minor, $greatest_tag.Build + 1)
-}
+$greatest_build_number = $tags | Where-Object { $_ -match $tag_pattern } | ForEach-Object { [int]($matches.1) } | Sort-Object -Descending | Select-Object -First 1
+
+$next_build_number = if ($greatest_build_number) { $greatest_build_number + 1 } else { 0 }
+
+$next_tag = "$($MajorMinorVersion)$($suffix).$($next_build_number)"
 $next_image_name = "$Registry/$($RepositoryName):$next_tag"
+
 Write-Host "::set-output name=next-tag::$next_tag"
 Write-Host "::set-output name=next-image-name::$next_image_name"
