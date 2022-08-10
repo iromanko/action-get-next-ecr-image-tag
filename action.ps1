@@ -11,9 +11,10 @@ $suffix = if ($PreReleaseTag) { "-$PreReleaseTag" } else { "" }
 $tag_pattern = "$($MajorMinorVersion.Replace('.','\.'))$($suffix)\.(\d+)"
 
 $tags = (aws ecr list-images --repository-name $RepositoryName | ConvertFrom-Json).imageIds.imageTag
-$greatest_build_number = $tags | Where-Object { $_ -match $tag_pattern } | ForEach-Object { [int]($matches.1) } | Sort-Object -Descending | Select-Object -First 1
-
-$next_build_number = if ($greatest_build_number) { $greatest_build_number + 1 } else { 0 }
+$next_build_number = $tags | Where-Object { $_ -match $tag_pattern } | ForEach-Object { [int]($matches.1) + 1 } | Sort-Object -Descending | Select-Object -First 1
+if (-Not $next_build_number) {
+    $next_build_number = 0
+}
 
 $next_tag = "$($MajorMinorVersion)$($suffix).$($next_build_number)"
 $next_image_name = "$Registry/$($RepositoryName):$next_tag"
