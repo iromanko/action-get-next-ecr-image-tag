@@ -19,5 +19,7 @@ if (-Not $next_build_number) {
 $next_tag = "$($MajorMinorVersion)$($suffix).$($next_build_number)"
 $next_image_name = "$Registry/$($RepositoryName):$next_tag"
 
+Write-Host "The next tag is $next_tag"
+Write-Host "The next image name is $next_image_name"
 Write-Host "::set-output name=next-tag::$next_tag"
 Write-Host "::set-output name=next-image-name::$next_image_name"
